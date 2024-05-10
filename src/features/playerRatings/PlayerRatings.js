@@ -4,7 +4,8 @@ import PlayerName from '../../components/PlayerName';
 function PlayerRatings({
   players = [],
   maxPlayersListed = 0,
-  rankBy = 'overall'
+  rankBy = 'overall',
+  onPlayerClick
 }) {
   const sortedPlayers = useMemo(() => {
     const sorted = [...players].sort((a, b) => {
@@ -24,6 +25,8 @@ function PlayerRatings({
     <div className="col justify-start items-center w-full p-2 rounded-lg border-2 border-blue-500 h-full dark:bg-blue-800 dark:text-red-200 bg-red-300 overflow-y-scroll whitespace-nowrap">
       {sortedPlayers.map((player, id) => (
         <span
+          role="presentation"
+          onClick={onPlayerClick ? () => onPlayerClick(player) : null}
           key={`player-${player.id || id}-ratings-row`}
           className="row w-full justify-between items-center"
         >

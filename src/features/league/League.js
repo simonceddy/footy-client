@@ -7,6 +7,7 @@ import TeamOverview from '../../components/TeamOverview';
 import TeamColours from '../../components/TeamColours';
 import FixtureRound from '../../components/FixtureRound';
 import PlayerRatings from '../playerRatings/PlayerRatings';
+import PlayerCard from '../../components/PlayerCard';
 
 function getAllPlayers(league) {
   const players = [];
@@ -24,6 +25,7 @@ function League() {
   const [showTeam, setShowTeam] = useState(null);
   const [showFixture, setShowFixture] = useState(null);
   const [showPlayerRatings, setShowPlayerRatings] = useState(false);
+  const [showPlayerCard, setShowPlayerCard] = useState(null);
 
   useEffect(() => {
     if (isSuccess && data && typeof data.league?.name === 'string') {
@@ -53,8 +55,32 @@ function League() {
         </Modal>
       )}
       {showPlayerRatings && (
-        <Modal onClose={() => setShowPlayerRatings(false)}>
-          <PlayerRatings players={getAllPlayers(data.league)} />
+        <Modal onClose={() => {
+          setShowPlayerRatings(false);
+          if (showPlayerCard) setShowPlayerCard(null);
+        }}
+        >
+          {showPlayerCard ? (
+            <div className="w-full h-full relative col justify-start items-center bg-slate-300 dark:bg-slate-700 dark:text-purple-300 rounded-lg py-2 px-4">
+              <div
+                role="presentation"
+                className="absolute top-0 left-0 w-full h-full"
+                onClick={() => {
+                  setShowPlayerCard(null);
+                }}
+              />
+              <button className="p-1 m-1 border rounded-lg hover:underline z-30" type="button" onClick={() => setShowPlayerCard(null)}>
+                Back
+              </button>
+              <PlayerCard player={showPlayerCard} />
+            </div>
+          )
+            : (
+              <PlayerRatings
+                onPlayerClick={(player) => setShowPlayerCard(player)}
+                players={getAllPlayers(data.league)}
+              />
+            )}
         </Modal>
       )}
       {isSuccess && (

@@ -62,7 +62,11 @@ function TeamOverview({ team = {}, players = [] }) {
             </div>
             <div className="col h-[90%] w-full overflow-y-scroll">
               {showBest23 ? (
-                <PlayerRatings players={players} maxPlayersListed={23} />
+                <PlayerRatings
+                  onPlayerClick={(player) => setShowPlayerCard(player)}
+                  players={players}
+                  maxPlayersListed={23}
+                />
               ) : (
                 <PlayingList
                   onPlayerNameClick={(player) => setShowPlayerCard(player)}
