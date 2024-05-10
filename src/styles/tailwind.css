@@ -623,6 +623,10 @@ video {
   z-index: 30;
 }
 
+.z-40 {
+  z-index: 40;
+}
+
 .m-1 {
   margin: 0.25rem;
 }
@@ -901,6 +905,10 @@ video {
 
 .bg-slate-400\/50 {
   background-color: rgb(148 163 184 / 0.5);
+}
+
+.bg-slate-500\/10 {
+  background-color: rgb(100 116 139 / 0.1);
 }
 
 .bg-white {

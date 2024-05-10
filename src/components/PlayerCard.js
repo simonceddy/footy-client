@@ -7,7 +7,7 @@ function PlayerCard({ player }) {
     : null;
   // console.log(attributes);
   return (
-    <div className="col justify-center items-center p-2 bg-cyan-700 rounded-lg w-fit h-fit">
+    <div className="col justify-center items-center z-40 p-2 bg-cyan-700 rounded-lg w-fit h-fit">
       <div className="col justify-between items-center p-2 bg-slate-200 dark:bg-slate-900 text-blue-900 dark:text-blue-200 border-2 border-blue-500 rounded-lg">
         {player.number && (
           <span

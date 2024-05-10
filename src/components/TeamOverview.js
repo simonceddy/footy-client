@@ -13,12 +13,19 @@ function TeamOverview({ team = {}, players = [] }) {
   return (
     <div className={`${showPlayerCard ? 'col justify-center items-center' : 'row justify-between items-start'} w-[500px] h-full bg-slate-100 dark:bg-slate-800 dark:text-teal-200 rounded-lg border-2 border-slate-500`}>
       {showPlayerCard ? (
-        <>
-          <button type="button" onClick={() => setShowPlayerCard(null)}>
+        <div className="w-full h-full relative col justify-start items-center">
+          <div
+            role="presentation"
+            className="absolute top-0 left-0 w-full h-full bg-slate-500/10"
+            onClick={() => {
+              setShowPlayerCard(null);
+            }}
+          />
+          <button className="p-1 m-1 border rounded-lg hover:underline z-30" type="button" onClick={() => setShowPlayerCard(null)}>
             Back
           </button>
           <PlayerCard player={showPlayerCard} />
-        </>
+        </div>
       ) : (
         <>
           <div className="col h-full w-1/2">
