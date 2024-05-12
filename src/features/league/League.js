@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetGeneratedLeagueQuery } from '../factory/factoryAPI';
 import { ucfirstAll } from '../../helpers';
 import Modal from '../../components/Modal';
@@ -8,6 +9,8 @@ import TeamColours from '../../components/TeamColours';
 import FixtureRound from '../../components/FixtureRound';
 import PlayerRatings from '../playerRatings/PlayerRatings';
 import PlayerCard from '../../components/PlayerCard';
+import { setResult } from './leagueSlice';
+import MatchSummary from '../../components/MatchSummary';
 
 function getAllPlayers(league) {
   const players = [];
@@ -22,25 +25,29 @@ function League() {
     data, refetch, isSuccess, isFetching
   } = useGetGeneratedLeagueQuery();
 
+  const { results } = useSelector((s) => s.league);
+  // TODO tidy up all the modal states
   const [showTeam, setShowTeam] = useState(null);
   const [showFixture, setShowFixture] = useState(null);
   const [showPlayerRatings, setShowPlayerRatings] = useState(false);
   const [showPlayerCard, setShowPlayerCard] = useState(null);
-
+  const [showMatchSummary, setShowMatchSummary] = useState(null);
+  const dispatch = useDispatch();
   const attemptSimulation = async (match) => {
     // Prepare match data
     const formdata = {
+      matchId: match.id,
       homeTeamContainer: {
         team: match.homeTeam,
         playingList: data.league.teamLists[match.homeTeam.location]
       },
       awayTeamContainer: {
         team: match.awayTeam,
-        playingList: data.league.teamLists[match.homeTeam.location]
+        playingList: data.league.teamLists[match.awayTeam.location]
       },
       playingField: match.homeTeam.homeground
     };
-    console.log(formdata);
+    // console.log(formdata);
     const res = await fetch('/api/simulation/match', {
       method: 'POST',
       body: JSON.stringify(formdata),
@@ -49,7 +56,11 @@ function League() {
       }
     });
     const resBody = await res.json();
-    console.log(resBody);
+    // console.log(resBody);
+    dispatch(setResult({
+      ...resBody,
+      id: match.id
+    }));
   };
 
   useEffect(() => {
@@ -74,10 +85,22 @@ function League() {
       )}
       {showFixture && (
         <Modal onClose={() => setShowFixture(null)}>
-          <FixtureRound
-            onMatchClick={attemptSimulation}
-            matches={showFixture}
-          />
+          {showMatchSummary ? (
+            <MatchSummary
+              close={() => setShowMatchSummary(null)}
+              match={showMatchSummary}
+              result={results[showMatchSummary.id] || {}}
+              simulate={attemptSimulation}
+            />
+          ) : (
+            <FixtureRound
+              results={results}
+              onMatchClick={(_e, match) => {
+                setShowMatchSummary(match);
+              }}
+              matches={showFixture}
+            />
+          )}
         </Modal>
       )}
       {showPlayerRatings && (
