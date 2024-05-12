@@ -27,6 +27,31 @@ function League() {
   const [showPlayerRatings, setShowPlayerRatings] = useState(false);
   const [showPlayerCard, setShowPlayerCard] = useState(null);
 
+  const attemptSimulation = async (match) => {
+    // Prepare match data
+    const formdata = {
+      homeTeamContainer: {
+        team: match.homeTeam,
+        playingList: data.league.teamLists[match.homeTeam.location]
+      },
+      awayTeamContainer: {
+        team: match.awayTeam,
+        playingList: data.league.teamLists[match.homeTeam.location]
+      },
+      playingField: match.homeTeam.homeground
+    };
+    console.log(formdata);
+    const res = await fetch('/api/simulation/match', {
+      method: 'POST',
+      body: JSON.stringify(formdata),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const resBody = await res.json();
+    console.log(resBody);
+  };
+
   useEffect(() => {
     if (isSuccess && data && typeof data.league?.name === 'string') {
       document
@@ -50,6 +75,7 @@ function League() {
       {showFixture && (
         <Modal onClose={() => setShowFixture(null)}>
           <FixtureRound
+            onMatchClick={attemptSimulation}
             matches={showFixture}
           />
         </Modal>
