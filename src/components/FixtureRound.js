@@ -1,7 +1,7 @@
 import { renderTeamName } from '../helpers';
 
 function FixtureRound({
-  matches = [], onMatchClick, results = {},
+  matches = [], onMatchClick, results = {}, simulate
 }) {
   return (
     <div className="col justify-start items-center w-[600px] h-full overflow-y-scroll bg-slate-100 dark:bg-slate-800 dark:text-teal-200 rounded-lg border-2 border-slate-500">
@@ -14,6 +14,13 @@ function FixtureRound({
           Away Team
         </span>
       </div>
+      {simulate && (
+      <div className="row justify-between items-center w-full px-1 pt-1 pb-3">
+        <button className="p-1 m-1 border rounded-lg hover:underline z-30" type="button" onClick={simulate}>
+          Simulate All
+        </button>
+      </div>
+      )}
       {matches.map((match, id) => {
         const result = results[match.id] || {};
         // if (result.victor) console.log(result);

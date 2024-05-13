@@ -63,6 +63,10 @@ function League() {
     }));
   };
 
+  const simulateRound = async (matches = []) => {
+    await Promise.all(matches.map(attemptSimulation));
+  };
+
   useEffect(() => {
     if (isSuccess && data && typeof data.league?.name === 'string') {
       document
@@ -84,7 +88,11 @@ function League() {
         </Modal>
       )}
       {showFixture && (
-        <Modal onClose={() => setShowFixture(null)}>
+        <Modal onClose={() => {
+          setShowFixture(null);
+          if (showMatchSummary) setShowMatchSummary(null);
+        }}
+        >
           {showMatchSummary ? (
             <MatchSummary
               close={() => setShowMatchSummary(null)}
@@ -94,6 +102,7 @@ function League() {
             />
           ) : (
             <FixtureRound
+              simulate={() => simulateRound(showFixture)}
               results={results}
               onMatchClick={(_e, match) => {
                 setShowMatchSummary(match);
