@@ -29,7 +29,7 @@ function FixtureRound({
             key={`round-fixture-${id}`}
             role="presentation"
             onClick={onMatchClick ? (e) => onMatchClick(e, match) : null}
-            className="row justify-between items-center w-full p-1 odd:bg-blue-400/20 even:bg-green-400/20 hover:bg-yellow-300/20"
+            className={`row justify-between items-center w-full p-1 hover:underline odd:bg-blue-400/20 even:bg-green-400/20 hover:bg-yellow-300/20 ${onMatchClick ? 'cursor-pointer' : ''}`}
           >
             <span className={`w-[47%] ${result.victor === match.homeTeam.id ? 'font-bold' : ''}`}>
               {renderTeamName(match.homeTeam)}

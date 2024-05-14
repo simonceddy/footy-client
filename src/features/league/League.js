@@ -1,16 +1,24 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
+import {
+  useCallback, useEffect, useMemo, useState
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetGeneratedLeagueQuery } from '../factory/factoryAPI';
-import { ucfirstAll } from '../../helpers';
+import { serverUrl, ucfirstAll } from '../../helpers';
 import Modal from '../../components/Modal';
 import TeamOverview from '../../components/TeamOverview';
 import TeamColours from '../../components/TeamColours';
 import FixtureRound from '../../components/FixtureRound';
 import PlayerRatings from '../playerRatings/PlayerRatings';
 import PlayerCard from '../../components/PlayerCard';
-import { setResult } from './leagueSlice';
+import {
+  clearState, setLadder, setResult, setTab, tabs
+} from './leagueSlice';
 import MatchSummary from '../../components/MatchSummary';
+import { fillLadderFromRounds } from './support';
+import Ladder from '../../components/Ladder';
+import TabButton from '../../components/TabButton';
+import RoundList from '../../components/RoundList';
 
 function getAllPlayers(league) {
   const players = [];
@@ -25,13 +33,16 @@ function League() {
     data, refetch, isSuccess, isFetching
   } = useGetGeneratedLeagueQuery();
 
-  const { results } = useSelector((s) => s.league);
+  const [isSimulating, setIsSimulating] = useState(false);
+
+  const { results, ladder, tab } = useSelector((s) => s.league);
   // TODO tidy up all the modal states
   const [showTeam, setShowTeam] = useState(null);
   const [showFixture, setShowFixture] = useState(null);
   const [showPlayerRatings, setShowPlayerRatings] = useState(false);
   const [showPlayerCard, setShowPlayerCard] = useState(null);
   const [showMatchSummary, setShowMatchSummary] = useState(null);
+
   const dispatch = useDispatch();
   const attemptSimulation = async (match) => {
     // Prepare match data
@@ -48,7 +59,7 @@ function League() {
       playingField: match.homeTeam.homeground
     };
     // console.log(formdata);
-    const res = await fetch('/api/simulation/match', {
+    const res = await fetch(`${serverUrl()}/api/simulation/match`, {
       method: 'POST',
       body: JSON.stringify(formdata),
       headers: {
@@ -67,16 +78,31 @@ function League() {
     await Promise.all(matches.map(attemptSimulation));
   };
 
+  const simulateLeague = async () => {
+    const rounds = Object.values(data.fixture.rounds);
+    await Promise.all(rounds.map(simulateRound));
+  };
+
   useEffect(() => {
-    if (isSuccess && data && typeof data.league?.name === 'string') {
-      document
-        .getElementsByTagName('title')[0]
-        .innerHTML = ucfirstAll(data.league.name);
+    if (isSuccess && data && data.fixture && !isSimulating) {
+      dispatch(setLadder(fillLadderFromRounds(data.fixture.rounds, results)));
+    }
+  }, [isSimulating]);
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      if (typeof data.league?.name === 'string') {
+        document
+          .getElementsByTagName('title')[0]
+          .innerHTML = ucfirstAll(data.league.name);
+      }
+      dispatch(clearState());
     }
   }, [data]);
 
   if (isFetching) return <div>Fetching data...</div>;
-  // console.log(data);
+  // console.log(ladder);
+  // console.log(isSimulating);
   return (
     <div className="w-full h-full col justify-start items-center">
       {showTeam && (
@@ -98,11 +124,19 @@ function League() {
               close={() => setShowMatchSummary(null)}
               match={showMatchSummary}
               result={results[showMatchSummary.id] || {}}
-              simulate={attemptSimulation}
+              simulate={async (match) => {
+                setIsSimulating(true);
+                await attemptSimulation(match);
+                setIsSimulating(false);
+              }}
             />
           ) : (
             <FixtureRound
-              simulate={() => simulateRound(showFixture)}
+              simulate={async () => {
+                setIsSimulating(true);
+                await simulateRound(showFixture);
+                setIsSimulating(false);
+              }}
               results={results}
               onMatchClick={(_e, match) => {
                 setShowMatchSummary(match);
@@ -112,33 +146,24 @@ function League() {
           )}
         </Modal>
       )}
-      {showPlayerRatings && (
+      {showPlayerCard && (
         <Modal onClose={() => {
-          setShowPlayerRatings(false);
-          if (showPlayerCard) setShowPlayerCard(null);
+          setShowPlayerCard(null);
         }}
         >
-          {showPlayerCard ? (
-            <div className="w-full h-full relative col justify-start items-center bg-slate-300 dark:bg-slate-700 dark:text-purple-300 rounded-lg py-2 px-4">
-              <div
-                role="presentation"
-                className="absolute top-0 left-0 w-full h-full"
-                onClick={() => {
-                  setShowPlayerCard(null);
-                }}
-              />
-              <button className="p-1 m-1 border rounded-lg hover:underline z-30" type="button" onClick={() => setShowPlayerCard(null)}>
-                Back
-              </button>
-              <PlayerCard player={showPlayerCard} />
-            </div>
-          )
-            : (
-              <PlayerRatings
-                onPlayerClick={(player) => setShowPlayerCard(player)}
-                players={getAllPlayers(data.league)}
-              />
-            )}
+          <div className="w-full h-full relative col justify-start items-center bg-slate-300 dark:bg-slate-700 dark:text-purple-300 rounded-lg py-2 px-4">
+            <div
+              role="presentation"
+              className="absolute top-0 left-0 w-full h-full"
+              onClick={() => {
+                setShowPlayerCard(null);
+              }}
+            />
+            <button className="p-1 m-1 border rounded-lg hover:underline z-30" type="button" onClick={() => setShowPlayerCard(null)}>
+              Back
+            </button>
+            <PlayerCard player={showPlayerCard} />
+          </div>
         </Modal>
       )}
       {isSuccess && (
@@ -146,20 +171,50 @@ function League() {
           <button
             className="p-1 absolute top-1 left-1 border-2 rounded-lg border-blue-500 hover:border-yellow-500 active:border-green-500"
             type="button"
-            onClick={() => refetch()}
+            onClick={() => { refetch(); }}
           >
             Regenerate
           </button>
-          <div className="text-xl font-bold m-2 capitalize">{data.league.name}</div>
-          <button
-            type="button"
-            className="text-lg font-bold m-2 capitalize"
-            onClick={() => setShowPlayerRatings(true)}
-          >
-            Player Ratings
-          </button>
-          <div className="row w-full h-full justify-center items-center">
-            <div className="col justify-start items-start whitespace-nowrap overflow-y-scroll h-full w-[400px]">
+          <div className="text-xl font-bold m-2 capitalize">
+            {isSimulating ? 'Running simulations...' : data.league.name}
+          </div>
+          <div className="row items-center justify-center w-full h-[6%]">
+            <TabButton
+              onClick={() => {
+                dispatch(setTab(tabs.LADDER));
+              }}
+              selected={tab === tabs.LADDER}
+            >
+              Ladder
+            </TabButton>
+            <TabButton
+              onClick={() => {
+                dispatch(setTab(tabs.FIXTURE));
+              }}
+              selected={tab === tabs.FIXTURE}
+            >
+              Fixture
+            </TabButton>
+            <TabButton
+              onClick={() => {
+                dispatch(setTab(tabs.TEAMS));
+              }}
+              selected={tab === tabs.TEAMS}
+            >
+              Teams
+            </TabButton>
+            <TabButton
+              onClick={() => {
+                dispatch(setTab(tabs.PLAYERS));
+              }}
+              selected={tab === tabs.PLAYERS}
+            >
+              Player Ratings
+            </TabButton>
+          </div>
+          <div className="row w-full h-[88%] justify-center items-start">
+            {tab === tabs.TEAMS && (
+            <div className="col justify-start items-start whitespace-nowrap overflow-y-scroll h-full w-full sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/2">
               {Object.values(data.league.teams).map((team, id) => (
                 <button
                   type="button"
@@ -179,18 +234,31 @@ function League() {
                 </button>
               ))}
             </div>
-            <div className="w-[400px] h-full col justify-start items-start whitespace-nowrap overflow-y-scroll">
-              {Object.keys(data.fixture.rounds).map((round) => (
-                <button
-                  type="button"
-                  className="block w-full p-1 hover:underline"
-                  key={`fixture-round-${round}-button`}
-                  onClick={() => setShowFixture(data.fixture.rounds[round])}
-                >
-                  Round {round}
-                </button>
-              ))}
-            </div>
+            )}
+            {tab === tabs.LADDER && (
+              <Ladder
+                ladder={ladder}
+                onTeamClick={(team) => setShowTeam(team.location)}
+              />
+            )}
+            {tab === tabs.PLAYERS && (
+              <PlayerRatings
+                onPlayerClick={(player) => setShowPlayerCard(player)}
+                players={getAllPlayers(data.league)}
+                showTeam
+              />
+            )}
+            {tab === tabs.FIXTURE && (
+              <RoundList
+                simulateAll={async () => {
+                  setIsSimulating(true);
+                  await simulateLeague();
+                  setIsSimulating(false);
+                }}
+                rounds={Object.keys(data.fixture.rounds)}
+                onRoundClick={(round) => setShowFixture(data.fixture.rounds[round])}
+              />
+            )}
           </div>
         </div>
       )}

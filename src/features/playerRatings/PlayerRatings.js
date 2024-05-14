@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import PlayerName from '../../components/PlayerName';
+import { renderTeamName } from '../../helpers';
 
 function PlayerRatings({
   players = [],
   maxPlayersListed = 0,
   rankBy = 'overall',
-  onPlayerClick
+  onPlayerClick,
+  showTeam = false,
 }) {
   const sortedPlayers = useMemo(() => {
     const sorted = [...players].sort((a, b) => {
@@ -22,15 +24,24 @@ function PlayerRatings({
   }, [players, maxPlayersListed, rankBy]);
 
   return (
-    <div className="col justify-start items-center w-full p-2 rounded-lg border-2 border-blue-500 h-full dark:bg-blue-800 dark:text-red-200 bg-red-300 overflow-y-scroll whitespace-nowrap">
+    <div className="col justify-start items-center w-full p-2 rounded-lg border-2 border-blue-500 h-full dark:bg-blue-800 dark:text-red-200 bg-red-100/20 overflow-y-scroll whitespace-nowrap">
       {sortedPlayers.map((player, id) => (
         <span
           role="presentation"
           onClick={onPlayerClick ? () => onPlayerClick(player) : null}
           key={`player-${player.id || id}-ratings-row`}
-          className="row w-full justify-between items-center"
+          className={`row w-full justify-between items-center even:bg-blue-300/20 odd:bg-green-300/20 hover:bg-yellow-300/20 hover:underline ${onPlayerClick ? 'cursor-pointer' : ''}`}
         >
-          <PlayerName player={player} showNickname showNumber />
+          <span className="row w-4/5 justify-start items-center">
+            <span className={`${showTeam ? 'w-1/2' : 'w-full'}`}>
+              <PlayerName player={player} showNumber />
+            </span>
+            {showTeam && player.team && (
+              <span className="capitalize italic">
+                - {renderTeamName(player.team)}
+              </span>
+            )}
+          </span>
           <span>
             {player.attributes?.attributes?.[rankBy]?.value?.toLocaleString(undefined, {
               maximumFractionDigits: 2,

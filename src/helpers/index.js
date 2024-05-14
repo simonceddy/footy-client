@@ -15,3 +15,7 @@ export function renderTeamFromContainer(teamContainer = {}) {
 }
 
 export { default as ucfirst } from './ucfirst';
+
+export function totalScore({ goals = 0, behinds = 0 }) {
+  return behinds + (goals * 6);
+}

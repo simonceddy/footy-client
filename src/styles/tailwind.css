@@ -702,6 +702,14 @@ video {
   height: 10%;
 }
 
+.h-\[6\%\] {
+  height: 6%;
+}
+
+.h-\[88\%\] {
+  height: 88%;
+}
+
 .h-\[90\%\] {
   height: 90%;
 }
@@ -776,6 +784,10 @@ video {
 
 .min-w-\[600px\] {
   min-width: 600px;
+}
+
+.min-w-\[60\%\] {
+  min-width: 60%;
 }
 
 .max-w-\[90\%\] {
@@ -872,6 +884,10 @@ video {
   border-bottom-width: 1px;
 }
 
+.border-b-2 {
+  border-bottom-width: 2px;
+}
+
 .border-black {
   --tw-border-opacity: 1;
   border-color: rgb(0 0 0 / var(--tw-border-opacity));
@@ -880,6 +896,16 @@ video {
 .border-blue-500 {
   --tw-border-opacity: 1;
   border-color: rgb(59 130 246 / var(--tw-border-opacity));
+}
+
+.border-green-800 {
+  --tw-border-opacity: 1;
+  border-color: rgb(22 101 52 / var(--tw-border-opacity));
+}
+
+.border-lime-600 {
+  --tw-border-opacity: 1;
+  border-color: rgb(101 163 13 / var(--tw-border-opacity));
 }
 
 .border-slate-500 {
@@ -897,9 +923,13 @@ video {
   background-color: rgb(14 116 144 / var(--tw-bg-opacity));
 }
 
-.bg-red-300 {
+.bg-green-800 {
   --tw-bg-opacity: 1;
-  background-color: rgb(252 165 165 / var(--tw-bg-opacity));
+  background-color: rgb(22 101 52 / var(--tw-bg-opacity));
+}
+
+.bg-red-100\/20 {
+  background-color: rgb(254 226 226 / 0.2);
 }
 
 .bg-slate-100 {
@@ -1021,6 +1051,10 @@ video {
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+.text-\[16px\] {
+  font-size: 16px;
+}
+
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
@@ -1039,6 +1073,11 @@ video {
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .font-bold {
@@ -1063,6 +1102,11 @@ video {
   color: rgb(30 58 138 / var(--tw-text-opacity));
 }
 
+.text-pink-300 {
+  --tw-text-opacity: 1;
+  color: rgb(249 168 212 / var(--tw-text-opacity));
+}
+
 .text-red-700 {
   --tw-text-opacity: 1;
   color: rgb(185 28 28 / var(--tw-text-opacity));
@@ -1080,8 +1124,28 @@ video {
   background-color: rgb(96 165 250 / 0.3);
 }
 
+.odd\:bg-green-300\/20:nth-child(odd) {
+  background-color: rgb(134 239 172 / 0.2);
+}
+
 .odd\:bg-green-300\/30:nth-child(odd) {
   background-color: rgb(134 239 172 / 0.3);
+}
+
+.odd\:bg-green-400\/20:nth-child(odd) {
+  background-color: rgb(74 222 128 / 0.2);
+}
+
+.odd\:bg-blue-300\/20:nth-child(odd) {
+  background-color: rgb(147 197 253 / 0.2);
+}
+
+.even\:bg-blue-300\/20:nth-child(even) {
+  background-color: rgb(147 197 253 / 0.2);
+}
+
+.even\:bg-blue-400\/20:nth-child(even) {
+  background-color: rgb(96 165 250 / 0.2);
 }
 
 .even\:bg-blue-400\/30:nth-child(even) {
@@ -1100,6 +1164,10 @@ video {
   background-color: rgb(74 222 128 / 0.3);
 }
 
+.even\:bg-green-300\/20:nth-child(even) {
+  background-color: rgb(134 239 172 / 0.2);
+}
+
 .hover\:border-yellow-500:hover {
   --tw-border-opacity: 1;
   border-color: rgb(234 179 8 / var(--tw-border-opacity));
@@ -1109,8 +1177,24 @@ video {
   background-color: rgb(253 224 71 / 0.2);
 }
 
+.hover\:bg-yellow-400\/20:hover {
+  background-color: rgb(250 204 21 / 0.2);
+}
+
 .hover\:bg-yellow-400\/30:hover {
   background-color: rgb(250 204 21 / 0.3);
+}
+
+.hover\:bg-slate-200\/20:hover {
+  background-color: rgb(226 232 240 / 0.2);
+}
+
+.hover\:bg-slate-300\/30:hover {
+  background-color: rgb(203 213 225 / 0.3);
+}
+
+.hover\:bg-slate-400\/30:hover {
+  background-color: rgb(148 163 184 / 0.3);
 }
 
 .hover\:underline:hover {
@@ -1141,6 +1225,30 @@ video {
   text-decoration-line: underline;
 }
 
+@media (min-width: 640px) {
+  .sm\:w-4\/5 {
+    width: 80%;
+  }
+}
+
+@media (min-width: 768px) {
+  .md\:w-3\/4 {
+    width: 75%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:w-2\/3 {
+    width: 66.666667%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .xl\:w-1\/2 {
+    width: 50%;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .dark\:border-white {
     --tw-border-opacity: 1;
@@ -1155,6 +1263,11 @@ video {
   .dark\:bg-blue-800 {
     --tw-bg-opacity: 1;
     background-color: rgb(30 64 175 / var(--tw-bg-opacity));
+  }
+
+  .dark\:bg-blue-950 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(23 37 84 / var(--tw-bg-opacity));
   }
 
   .dark\:bg-slate-700 {
