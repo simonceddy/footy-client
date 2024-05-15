@@ -11,10 +11,10 @@ function PlayerRatings({
 }) {
   const sortedPlayers = useMemo(() => {
     const sorted = [...players].sort((a, b) => {
-      if (a.attributes?.attributes?.[rankBy]?.value === b.attributes?.attributes?.[rankBy]?.value) {
+      if (a.attributes?.attributes?.[rankBy] === b.attributes?.attributes?.[rankBy]) {
         return 0;
       }
-      return a.attributes?.attributes?.[rankBy]?.value > b.attributes?.attributes?.[rankBy]?.value
+      return a.attributes?.attributes?.[rankBy] > b.attributes?.attributes?.[rankBy]
         ? 1
         : -1;
     }).reverse();
@@ -43,7 +43,7 @@ function PlayerRatings({
             )}
           </span>
           <span>
-            {player.attributes?.attributes?.[rankBy]?.value?.toLocaleString(undefined, {
+            {player.attributes?.attributes?.[rankBy]?.toLocaleString(undefined, {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
             })}

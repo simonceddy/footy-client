@@ -3,7 +3,7 @@ import PlayerName from './PlayerName';
 
 function PlayerCard({ player }) {
   const attributes = player.attributes?.attributes
-    ? Object.values(player.attributes.attributes)
+    ? Object.keys(player.attributes.attributes)
     : null;
   // console.log(attributes);
   return (
@@ -32,15 +32,22 @@ function PlayerCard({ player }) {
             {Math.round(player.height)}cm
           </span>
         )}
+        {player.positions && (
+          <span className="m-2 font-mono">
+            {player.positions.map((pos) => (
+              <span key={`player-${player.id}-pos-${pos}`}>{pos}</span>
+            ))}
+          </span>
+        )}
         <div className="min-w-60 col justify-start items-center">
-          {attributes.map(({ key, value }) => (
+          {attributes.map((key) => (
             <div
-              className="row justify-between odd:bg-green-300/30 even:bg-blue-400/30 hover:underline items-center w-full"
+              className="row justify-between odd:bg-green-300/30 even:bg-blue-400/30 hover:underline items-center w-full text-[15px]"
               key={`player-attribute-${key}`}
             >
               <span className="bg-slate-400/30 py-0.5 px-2 capitalize text-left flex-1">{key}</span>
               <span className="flex-1 py-0.5 px-2 text-right">
-                {value.toLocaleString(undefined, {
+                {player.attributes.attributes[key].toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}

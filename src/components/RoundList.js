@@ -3,7 +3,7 @@ function RoundList({ rounds = [], onRoundClick, simulateAll }) {
     <div className="w-[400px] h-full col justify-start items-start whitespace-nowrap overflow-y-scroll">
       {simulateAll && (
       <button
-        className="p-1 m-1 border rounded-lg hover:underline z-30"
+        className="p-1 m-1 border rounded-lg hover:underline"
         type="button"
         onClick={() => simulateAll(rounds)}
       >
