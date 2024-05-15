@@ -756,16 +756,8 @@ video {
   width: 47%;
 }
 
-.w-\[500px\] {
-  width: 500px;
-}
-
 .w-\[6\%\] {
   width: 6%;
-}
-
-.w-\[600px\] {
-  width: 600px;
 }
 
 .w-fit {
@@ -782,12 +774,12 @@ video {
   min-width: 15rem;
 }
 
-.min-w-\[600px\] {
-  min-width: 600px;
-}
-
 .min-w-\[60\%\] {
   min-width: 60%;
+}
+
+.min-w-\[600px\] {
+  min-width: 600px;
 }
 
 .max-w-\[90\%\] {
@@ -1112,6 +1104,10 @@ video {
   color: rgb(185 28 28 / var(--tw-text-opacity));
 }
 
+.odd\:bg-blue-300\/20:nth-child(odd) {
+  background-color: rgb(147 197 253 / 0.2);
+}
+
 .odd\:bg-blue-300\/30:nth-child(odd) {
   background-color: rgb(147 197 253 / 0.3);
 }
@@ -1136,10 +1132,6 @@ video {
   background-color: rgb(74 222 128 / 0.2);
 }
 
-.odd\:bg-blue-300\/20:nth-child(odd) {
-  background-color: rgb(147 197 253 / 0.2);
-}
-
 .even\:bg-blue-300\/20:nth-child(even) {
   background-color: rgb(147 197 253 / 0.2);
 }
@@ -1150,6 +1142,10 @@ video {
 
 .even\:bg-blue-400\/30:nth-child(even) {
   background-color: rgb(96 165 250 / 0.3);
+}
+
+.even\:bg-green-300\/20:nth-child(even) {
+  background-color: rgb(134 239 172 / 0.2);
 }
 
 .even\:bg-green-300\/30:nth-child(even) {
@@ -1164,13 +1160,17 @@ video {
   background-color: rgb(74 222 128 / 0.3);
 }
 
-.even\:bg-green-300\/20:nth-child(even) {
-  background-color: rgb(134 239 172 / 0.2);
-}
-
 .hover\:border-yellow-500:hover {
   --tw-border-opacity: 1;
   border-color: rgb(234 179 8 / var(--tw-border-opacity));
+}
+
+.hover\:bg-slate-300\/30:hover {
+  background-color: rgb(203 213 225 / 0.3);
+}
+
+.hover\:bg-slate-400\/30:hover {
+  background-color: rgb(148 163 184 / 0.3);
 }
 
 .hover\:bg-yellow-300\/20:hover {
@@ -1183,18 +1183,6 @@ video {
 
 .hover\:bg-yellow-400\/30:hover {
   background-color: rgb(250 204 21 / 0.3);
-}
-
-.hover\:bg-slate-200\/20:hover {
-  background-color: rgb(226 232 240 / 0.2);
-}
-
-.hover\:bg-slate-300\/30:hover {
-  background-color: rgb(203 213 225 / 0.3);
-}
-
-.hover\:bg-slate-400\/30:hover {
-  background-color: rgb(148 163 184 / 0.3);
 }
 
 .hover\:underline:hover {

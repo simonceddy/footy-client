@@ -46,7 +46,7 @@ function MatchSummary({
       {result.score !== undefined && (
         <div className="p-2 m-2 border-2 border-slate-500 rounded-lg w-full col justify-start items-start">
           {showStats ? (
-            <MatchStats stats={result.stats} />
+            <MatchStats homeTeam={match.homeTeam} awayTeam={match.awayTeam} stats={result.stats} />
           ) : (
             <>
               <div className="w-full mb-1 border-b border-slate-500">

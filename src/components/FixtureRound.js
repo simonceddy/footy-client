@@ -4,7 +4,7 @@ function FixtureRound({
   matches = [], onMatchClick, results = {}, simulate
 }) {
   return (
-    <div className="col justify-start items-center w-[600px] h-full overflow-y-scroll bg-slate-100 dark:bg-slate-800 dark:text-teal-200 rounded-lg border-2 border-slate-500">
+    <div className="col justify-start items-center w-full h-full overflow-y-scroll bg-slate-100 dark:bg-slate-800 dark:text-teal-200 rounded-lg border-2 border-slate-500">
       <div className="row justify-between items-center w-full px-1 pt-1 pb-3">
         <span className="w-[47%]">
           Home Team
