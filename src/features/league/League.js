@@ -12,7 +12,7 @@ import FixtureRound from '../../components/FixtureRound';
 import PlayerRatings from '../playerRatings/PlayerRatings';
 import PlayerCard from '../../components/PlayerCard';
 import {
-  clearState, setLadder, setResult, setTab, tabs
+  clearState, setLadder, setResult, setResults, setTab, tabs
 } from './leagueSlice';
 import MatchSummary from '../../components/MatchSummary';
 import { fillLadderFromRounds } from './support';
@@ -39,25 +39,27 @@ function League() {
   // TODO tidy up all the modal states
   const [showTeam, setShowTeam] = useState(null);
   const [showFixture, setShowFixture] = useState(null);
-  const [showPlayerRatings, setShowPlayerRatings] = useState(false);
   const [showPlayerCard, setShowPlayerCard] = useState(null);
   const [showMatchSummary, setShowMatchSummary] = useState(null);
 
+  const prepareMatchData = (match) => ({
+    matchId: match.id,
+    homeTeamContainer: {
+      team: match.homeTeam,
+      playingList: data.league.teamLists[match.homeTeam.location]
+    },
+    awayTeamContainer: {
+      team: match.awayTeam,
+      playingList: data.league.teamLists[match.awayTeam.location]
+    },
+    playingField: match.homeTeam.homeground
+  });
+
   const dispatch = useDispatch();
+
   const attemptSimulation = async (match) => {
     // Prepare match data
-    const formdata = {
-      matchId: match.id,
-      homeTeamContainer: {
-        team: match.homeTeam,
-        playingList: data.league.teamLists[match.homeTeam.location]
-      },
-      awayTeamContainer: {
-        team: match.awayTeam,
-        playingList: data.league.teamLists[match.awayTeam.location]
-      },
-      playingField: match.homeTeam.homeground
-    };
+    const formdata = prepareMatchData(match);
     // console.log(formdata);
     const res = await fetch(`${serverUrl()}/api/simulation/match`, {
       method: 'POST',
@@ -75,12 +77,48 @@ function League() {
   };
 
   const simulateRound = async (matches = []) => {
-    await Promise.all(matches.map(attemptSimulation));
+    const preparedMatches = { matches: matches.map(prepareMatchData) };
+    const res = await fetch(`${serverUrl()}/api/simulation/round`, {
+      method: 'POST',
+      body: JSON.stringify(preparedMatches),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    // TODO check for errors
+    const body = await res.json();
+    if (body.success === false) {
+      // error!
+      console.log(body.message || 'error!');
+    } else {
+      dispatch(setResults({ results: body }));
+    }
+    // console.log(body);
+
+    // await Promise.all(matches.map(attemptSimulation));
   };
 
   const simulateLeague = async () => {
-    const rounds = Object.values(data.fixture.rounds);
-    await Promise.all(rounds.map(simulateRound));
+    const rounds = {
+      rounds: Object.values(data.fixture.rounds)
+        .map((matches = []) => ({ matches: matches.map(prepareMatchData) }))
+    };
+    const res = await fetch(`${serverUrl()}/api/simulation/season`, {
+      method: 'POST',
+      body: JSON.stringify(rounds),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const body = await res.json();
+    if (body.success === false) {
+      // error!
+      console.log(body.message || 'error!');
+    } else {
+      // console.log(body);
+      dispatch(setResults({ results: [...body.flat()] }));
+    }
+    // await Promise.all(Object.values(data.fixture.rounds).map(simulateRound));
   };
 
   useEffect(() => {
@@ -101,8 +139,6 @@ function League() {
   }, [data]);
 
   if (isFetching) return <div>Fetching data...</div>;
-  // console.log(ladder);
-  // console.log(isSimulating);
   return (
     <div className="w-full h-full col justify-start items-center">
       {showTeam && (
@@ -121,6 +157,7 @@ function League() {
         >
           {showMatchSummary ? (
             <MatchSummary
+              onPlayerClick={(player) => setShowPlayerCard(player)}
               close={() => setShowMatchSummary(null)}
               match={showMatchSummary}
               result={results[showMatchSummary.id] || {}}

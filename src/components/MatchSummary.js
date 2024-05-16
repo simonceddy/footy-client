@@ -5,7 +5,7 @@ import MatchStats from './MatchStats';
 /* eslint-disable max-len */
 
 function MatchSummary({
-  match = {}, result = {}, simulate, close
+  match = {}, result = {}, simulate, close, onPlayerClick
 }) {
   const [showStats, setShowStats] = useState(false);
   // console.log(result);
@@ -46,7 +46,12 @@ function MatchSummary({
       {result.score !== undefined && (
         <div className="p-2 m-2 border-2 border-slate-500 rounded-lg w-full col justify-start items-start">
           {showStats ? (
-            <MatchStats homeTeam={match.homeTeam} awayTeam={match.awayTeam} stats={result.stats} />
+            <MatchStats
+              onPlayerClick={onPlayerClick}
+              homeTeam={match.homeTeam}
+              awayTeam={match.awayTeam}
+              stats={result.stats}
+            />
           ) : (
             <>
               <div className="w-full mb-1 border-b border-slate-500">

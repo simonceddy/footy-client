@@ -35,6 +35,14 @@ export const leagueSlice = createSlice({
     setResult(state, action) {
       state.results[action.payload.id] = action.payload;
     },
+    setResults(state, action) {
+      if (action.payload.results && action.payload.results.forEach) {
+        action.payload.results.forEach((result) => {
+          // console.log(result);
+          state.results[result.id] = result;
+        });
+      }
+    },
     clearResults(state) {
       state.results = {};
     },
@@ -48,7 +56,7 @@ export const leagueSlice = createSlice({
 });
 
 export const {
-  setViewingTeam, setResult, clearResults, setLadder, clearState, setTab
+  setViewingTeam, setResult, clearResults, setLadder, clearState, setTab, setResults
 } = leagueSlice.actions;
 
 export default leagueSlice.reducer;

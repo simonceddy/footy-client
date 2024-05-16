@@ -1,6 +1,6 @@
 import PlayerName from './PlayerName';
 
-function TeamStatlines({ statlines = [] }) {
+function TeamStatlines({ statlines = [], onPlayerClick }) {
   return (
     <table>
       <thead>
@@ -44,7 +44,7 @@ function TeamStatlines({ statlines = [] }) {
             className="odd:bg-blue-300/20 even:bg-green-300/20 hover:bg-yellow-300/20"
           >
             <td className="hover:bg-slate-300/30">
-              <PlayerName player={player} showNumber />
+              <PlayerName onClick={onPlayerClick} player={player} showNumber />
               {}
             </td>
             <td className="hover:bg-slate-300/30">
