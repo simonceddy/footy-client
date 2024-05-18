@@ -11,6 +11,7 @@ const initialState = {
   viewingTeam: null,
   results: {},
   ladder: {},
+  playerStats: {},
   tab: tabs.TEAMS
 };
 
@@ -43,6 +44,9 @@ export const leagueSlice = createSlice({
         });
       }
     },
+    setStats(state, action) {
+      state.playerStats = action.payload;
+    },
     clearResults(state) {
       state.results = {};
     },
@@ -56,7 +60,14 @@ export const leagueSlice = createSlice({
 });
 
 export const {
-  setViewingTeam, setResult, clearResults, setLadder, clearState, setTab, setResults
+  setViewingTeam,
+  setResult,
+  clearResults,
+  setLadder,
+  clearState,
+  setTab,
+  setResults,
+  setStats
 } = leagueSlice.actions;
 
 export default leagueSlice.reducer;

@@ -59,3 +59,48 @@ export function fillLadderFromRounds(rounds = {}, results = {}) {
 
   return ladder;
 }
+
+const statsObject = {
+  played: 0,
+  kick: 0,
+  handball: 0,
+  mark: 0,
+  tackle: 0,
+  hitout: 0,
+  spoil: 0,
+  goal: 0,
+  behind: 0,
+};
+
+export function combineAllStats(results = {}) {
+  const resultsArray = Object.values(results);
+
+  const playerStats = {};
+
+  resultsArray.forEach((result) => {
+    if (result.stats) {
+      const homeStats = Object.values(result.stats.homeTeam || {});
+      const awayStats = Object.values(result.stats.awayTeam || {});
+      [...homeStats, ...awayStats].forEach((statline) => {
+        if (!statline.player) {
+          throw new Error('Undefined player for statline!');
+        }
+        if (!playerStats[statline.player.id]) {
+          playerStats[statline.player.id] = { stats: { ...statsObject } };
+          playerStats[statline.player.id].player = statline.player;
+        }
+        playerStats[statline.player.id].stats.played += 1;
+        playerStats[statline.player.id].stats.kick += statline.stats.kick || 0;
+        playerStats[statline.player.id].stats.handball += statline.stats.handball || 0;
+        playerStats[statline.player.id].stats.mark += statline.stats.mark || 0;
+        playerStats[statline.player.id].stats.tackle += statline.stats.tackle || 0;
+        playerStats[statline.player.id].stats.hitout += statline.stats.hitout || 0;
+        playerStats[statline.player.id].stats.spoil += statline.stats.spoil || 0;
+        playerStats[statline.player.id].stats.goal += statline.stats.goal || 0;
+        playerStats[statline.player.id].stats.behind += statline.stats.behind || 0;
+      });
+    }
+  });
+
+  return playerStats;
+}

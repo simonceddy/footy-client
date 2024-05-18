@@ -1,6 +1,7 @@
 import PlayerName from './PlayerName';
 
-function TeamStatlines({ statlines = [], onPlayerClick }) {
+function TeamStatlines({ statlines = [], onPlayerClick, includeGamesPlayed = false }) {
+  if (statlines.length === 0) return <div>No stats yet</div>;
   return (
     <table>
       <thead>
@@ -8,6 +9,11 @@ function TeamStatlines({ statlines = [], onPlayerClick }) {
           <th className="px-2">
             Player
           </th>
+          {includeGamesPlayed && (
+          <th className="px-2">
+            Games
+          </th>
+          )}
           <th className="px-2">
             Kicks
           </th>
@@ -47,6 +53,11 @@ function TeamStatlines({ statlines = [], onPlayerClick }) {
               <PlayerName onClick={onPlayerClick} player={player} showNumber />
               {}
             </td>
+            {includeGamesPlayed && (
+            <td className="hover:bg-slate-300/30">
+              {stats.played || 0}
+            </td>
+            )}
             <td className="hover:bg-slate-300/30">
               {stats.kick || 0}
             </td>

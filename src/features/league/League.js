@@ -12,10 +12,10 @@ import FixtureRound from '../../components/FixtureRound';
 import PlayerRatings from '../playerRatings/PlayerRatings';
 import PlayerCard from '../../components/PlayerCard';
 import {
-  clearState, setLadder, setResult, setResults, setTab, tabs
+  clearState, setLadder, setResult, setResults, setStats, setTab, tabs
 } from './leagueSlice';
 import MatchSummary from '../../components/MatchSummary';
-import { fillLadderFromRounds } from './support';
+import { combineAllStats, fillLadderFromRounds } from './support';
 import Ladder from '../../components/Ladder';
 import TabButton from '../../components/TabButton';
 import RoundList from '../../components/RoundList';
@@ -35,7 +35,9 @@ function League() {
 
   const [isSimulating, setIsSimulating] = useState(false);
 
-  const { results, ladder, tab } = useSelector((s) => s.league);
+  const {
+    results, ladder, tab
+  } = useSelector((s) => s.league);
   // TODO tidy up all the modal states
   const [showTeam, setShowTeam] = useState(null);
   const [showFixture, setShowFixture] = useState(null);
@@ -124,6 +126,7 @@ function League() {
   useEffect(() => {
     if (isSuccess && data && data.fixture && !isSimulating) {
       dispatch(setLadder(fillLadderFromRounds(data.fixture.rounds, results)));
+      dispatch(setStats(combineAllStats(results)));
     }
   }, [isSimulating]);
 
